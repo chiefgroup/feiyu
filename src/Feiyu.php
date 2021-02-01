@@ -14,7 +14,7 @@ use Psr\Http\Message\ResponseInterface;
 /**
  * Class Feiyu
  *
- * @package ChiefGroup
+ * @package ChiefGroup\Feiyu
  *
  */
 class Feiyu
@@ -42,7 +42,7 @@ class Feiyu
      * @return array|mixed
      * @throws GuzzleException
      */
-    public function pullClues($signature, $token, $startTime, $endTime, $page = 1, $pageSize = 10)
+    public function getClues($signature, $token, $startTime, $endTime, $page = 1, $pageSize = 10)
     {
 
         $path = "/crm/v2/openapi/pull-clues/?start_time={$startTime}&end_time={$endTime}";
