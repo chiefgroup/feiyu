@@ -2,7 +2,7 @@
   "name": "chiefgroup/feiyu",
   "description": "feiyu SDK",
   "type": "library",
-  "license": "BSD 3-Clause",
+  "license": "MIT",
   "authors": [
     {
       "name": "observer",
