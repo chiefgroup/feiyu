@@ -1,6 +1,6 @@
 <?php
 
-namespace ChiefGroup;
+namespace ChiefGroup\Feiyu;
 
 use ChiefGroup\Kernel\BaseClient;
 use GuzzleHttp\Client;
@@ -14,7 +14,7 @@ use Psr\Http\Message\ResponseInterface;
 /**
  * Class Feiyu
  *
- * @package ChiefGroup
+ * @package ChiefGroup\Feiyu
  *
  */
 class Feiyu
@@ -28,7 +28,7 @@ class Feiyu
 
     public function __construct()
     {
-        $this->baseClient = new BaseClient();
+
     }
 
     /**
@@ -42,46 +42,34 @@ class Feiyu
      * @return array|mixed
      * @throws GuzzleException
      */
-    public function pullClues($signature, $token, $startTime, $endTime, $page = 1, $pageSize = 10)
+    public function getClues($signature, $token, $startTime, $endTime, $page = 1, $pageSize = 10)
     {
 
-        $uri = "/crm/v2/openapi/pull-clues/?start_time={$startTime}&end_time={$endTime}&page={$page}&page_size={$pageSize}";
-        $headers = $this->_headers($startTime, $endTime, $signature, $token);
+        $path = "/crm/v2/openapi/pull-clues/?start_time={$startTime}&end_time={$endTime}";
+        $headers = $this->_headers($path, $signature, $token);
 
-        $response = $this->_getClient()->request('GET', $uri, ['headers' => $headers]);
+        $path .= "&page={$page}&page_size={$pageSize}";
+        $response = $this->_getClient()->request('GET', $path, ['headers' => $headers]);
 
 
         return $response->getBody()->getContents();
     }
 
     /**
-     * @param $startTime
-     * @param $endTime
+     * @param $path
      * @param $signature
      * @param $token
      * @return array[]
      */
-    private function _headers($startTime, $endTime, $signature, $token): array
+    private function _headers($path,$signature, $token): array
     {
+        $time = time();
         return [
                 'Accept'       => 'application/json',
-                'Signature'    => $this->_signature($startTime, $endTime, $signature),
-                'Timestamp'    => time(),
+                'Signature'    => base64_encode(hash_hmac('sha256', $path . ' ' . $time, $signature)),
+                'Timestamp'    => $time,
                 'Access-Token' => $token,
         ];
-    }
-
-    /**
-     * @param $startTime
-     * @param $endTime
-     * @param $signatureKey
-     *
-     * @return string
-     */
-    private function _signature($startTime, $endTime, $signatureKey): string
-    {
-        $path = "/crm/v2/openapi/pull-clues/?start_time={$startTime}&end_time={$endTime} " . time();
-        return base64_encode(hash_hmac('sha256', $path, $signatureKey));
     }
 
     /**
@@ -113,7 +101,5 @@ class Feiyu
 
         return $this->client;
     }
-
-
 
 }

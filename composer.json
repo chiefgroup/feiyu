@@ -2,7 +2,7 @@
   "name": "chiefgroup/feiyu",
   "description": "feiyu SDK",
   "type": "library",
-  "license": "BSD 3-Clause License",
+  "license": "BSD 3-Clause",
   "authors": [
     {
       "name": "observer",
@@ -11,7 +11,7 @@
   ],
   "autoload": {
     "psr-4": {
-      "ChiefGroup\\": "src/"
+      "ChiefGroup\\Feiyu\\": "src/"
     }
   },
   "autoload-dev": {
