@@ -19,6 +19,8 @@ use Psr\Http\Message\ResponseInterface;
  */
 class Feiyu
 {
+    private $client;
+
     /**
      * @var BaseClient $baseClient
      */
@@ -46,10 +48,10 @@ class Feiyu
         $uri = "/crm/v2/openapi/pull-clues/?start_time={$startTime}&end_time={$endTime}&page={$page}&page_size={$pageSize}";
         $headers = $this->_headers($startTime, $endTime, $signature, $token);
 
-        $response = $this->baseClient->request('GET', $uri, ['headers' => $headers, 'base_uri' => 'https://feiyu.oceanengine.com', 'json']);
+        $response = $this->_getClient()->request('GET', $uri, ['headers' => $headers]);
 
-        var_dump($response);
-        exit();
+
+        return $response->getBody()->getContents();
     }
 
     /**
@@ -87,8 +89,6 @@ class Feiyu
      */
     private function _getClient()
     {
-
-
         if (!$this->client) {
             $stack = HandlerStack::create();
 
