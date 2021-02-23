@@ -22,6 +22,7 @@ class Feiyu
 {
     private $baseUri = 'https://feiyu.oceanengine.com/';
     private $pullAPI = '/crm/v2/openapi/pull-clues/';
+    private $callbackAPI = '/crm/v2/openapi/clue/callback/';
 
     /**
      * @var array $config
@@ -35,6 +36,30 @@ class Feiyu
         $this->config = $config;
         $this->signature = $config['signature'] ?? '';
         $this->token = $config['token'] ?? '';
+    }
+
+    public function callback($source, $clueId, $clueConvertState, $signature = '', $token = '')
+    {
+        $signature = $signature ?: $this->signature;
+        $token = $token ?: $this->token;
+
+        if (empty($signature) || empty($token)) {
+            throw new InvalidArgumentException('signature or token is required');
+        }
+
+        $path = $this->callbackAPI;
+        $httpClient = $this->_getClient();
+        $headers = $this->_reqHeaders($path, $signature, $token);
+        $data = [
+            'source' => $source,
+            'data' => [
+                'clue_id' => $clueId,
+                'clue_convert_state' => $clueConvertState,
+            ],
+        ];
+
+        $response = $httpClient->request('POST', $path, ['headers' => $headers, 'json' => $data]);
+        return json_decode($response->getBody()->getContents(), true);
     }
 
     /**
